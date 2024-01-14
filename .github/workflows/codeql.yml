@@ -1,0 +1,26 @@
+name: "workflow"
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  say-hi:
+    name: Analyze
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+
+    strategy:
+      matrix:
+        language: [ 'c-cpp', 'java-kotlin', 'javascript-typescript', 'python', 'go' ]
+
+    steps:
+    - name: say hello
+      run: |
+        echo "hello from the repository"
+        echo "language: ${{ matrix.language }}"
