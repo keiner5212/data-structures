@@ -1,32 +1,49 @@
 #include <iostream>
 #include <stack>
-using namespace std;
+#include <chrono>
+#include <iomanip>
 
 /**
- * @brief This program demonstrates basic operations with a stack.
- * 
- * The program pushes values onto a stack, pops values from the stack, 
- * and prints the elements of the stack to the console.
- * 
- * @return 0 indicating successful execution.
+ * Demonstrates stack operations with LIFO (Last In First Out) behavior.
+ * Uses std::stack container adapter.
+ * Pushes 5 integers and pops them to show reverse ordering.
  */
 int main() {
-    // Declaration of a stack of integers
-    stack<int> myStack;
+    auto startTime = std::chrono::high_resolution_clock::now();
+    
+    // Create stack instance
+    std::stack<int> myStack;
 
-    // Pushing values onto the stack
+    // Push elements
     myStack.push(10);
     myStack.push(20);
     myStack.push(30);
     myStack.push(40);
     myStack.push(50);
+    
+    // Calculate memory (approximate for 5 integers)
+    size_t memoryUsed = sizeof(int) * 5 + sizeof(std::stack<int>);
 
-    // Accessing the elements of the stack and printing to the console
-    cout << "Elements in the Stack:" << endl;
+    // Pop and print elements
+    std::cout << "Elements in the Stack:" << std::endl;
     while (!myStack.empty()) {
-        cout << "Element: " << myStack.top() << endl;
+        std::cout << "Popped Element: " << myStack.top() << std::endl;
         myStack.pop();
     }
+    
+    auto endTime = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime);
+    
+    // Performance statistics
+    std::cout << "\n--- Performance Statistics ---" << std::endl;
+    std::cout << std::fixed << std::setprecision(4);
+    std::cout << "Execution time: " << duration.count() / 1000.0 << " ms" << std::endl;
+    std::cout << "Memory usage: " << memoryUsed << " bytes" << std::endl;
+    std::cout << "\nTime Complexity:" << std::endl;
+    std::cout << "  - Push: O(1)" << std::endl;
+    std::cout << "  - Pop: O(1)" << std::endl;
+    std::cout << "  - Peek: O(1)" << std::endl;
+    std::cout << "  - IsEmpty: O(1)" << std::endl;
 
     return 0;
 }

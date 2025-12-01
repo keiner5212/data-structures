@@ -1,78 +1,127 @@
 #include <iostream>
-using namespace std;
-
-// Define a simple stack structure
-struct Stack {
-    int capacity;
-    int top;
-    int* array;
-};
-
-// Function to create a stack with a given capacity
-struct Stack* createStack(int capacity) {
-    struct Stack* stack = new Stack;
-    stack->capacity = capacity;
-    stack->top = -1;
-    stack->array = new int[capacity];
-    return stack;
-}
-
-// Function to check if the stack is full
-bool isFull(struct Stack* stack) {
-    return stack->top == stack->capacity - 1;
-}
-
-// Function to check if the stack is empty
-bool isEmpty(struct Stack* stack) {
-    return stack->top == -1;
-}
-
-// Function to push an element onto the stack
-void push(struct Stack* stack, int item) {
-    if (isFull(stack)) {
-        cout << "Stack Overflow\n";
-        return;
-    }
-    stack->array[++stack->top] = item;
-}
-
-// Function to pop an element from the stack
-int pop(struct Stack* stack) {
-    if (isEmpty(stack)) {
-        cout << "Stack Underflow\n";
-        return -1;
-    }
-    return stack->array[stack->top--];
-}
+#include <chrono>
+#include <iomanip>
 
 /**
- * @brief This program demonstrates basic operations with a stack.
- * 
- * The program pushes values onto a stack, pops values from the stack, 
- * and prints the elements of the stack to the console.
- * 
- * @return 0 indicating successful execution.
+ * Node structure for linked list implementation of stack.
  */
-int main() {
-    // Create a stack with a capacity of 5
-    struct Stack* myStack = createStack(5);
+struct Node {
+    int data;
+    Node* next;
 
-    // Pushing values onto the stack
-    push(myStack, 10);
-    push(myStack, 20);
-    push(myStack, 30);
-    push(myStack, 40);
-    push(myStack, 50);
+    Node(int value) : data(value), next(nullptr) {}
+};
 
-    // Accessing the elements of the stack and printing to the console
-    cout << "Elements in the Stack:" << endl;
-    while (!isEmpty(myStack)) {
-        cout << "Element: " << pop(myStack) << endl;
+/**
+ * Stack implementation using linked list (without STL).
+ * Provides O(1) push and pop operations.
+ */
+class Stack {
+private:
+    Node* top;
+    size_t count;
+
+public:
+    Stack() : top(nullptr), count(0) {}
+
+    ~Stack() {
+        while (!isEmpty()) {
+            pop();
+        }
     }
 
-    // Clean up and free the memory
-    delete[] myStack->array;
-    delete myStack;
+    /**
+     * Add element to the top of the stack. O(1) operation.
+     */
+    void push(int value) {
+        Node* newNode = new Node(value);
+        newNode->next = top;
+        top = newNode;
+        count++;
+    }
+
+    /**
+     * Remove and return top element from the stack. O(1) operation.
+     */
+    int pop() {
+        if (isEmpty()) {
+            std::cerr << "Error: Attempting to pop from an empty stack." << std::endl;
+            return -1;
+        }
+
+        int value = top->data;
+        Node* temp = top;
+        top = top->next;
+        delete temp;
+        count--;
+        return value;
+    }
+
+    /**
+     * Check if stack is empty. O(1) operation.
+     */
+    bool isEmpty() const {
+        return top == nullptr;
+    }
+
+    /**
+     * Return top element without removing it. O(1) operation.
+     */
+    int peek() const {
+        if (isEmpty()) {
+            std::cerr << "Error: Stack is empty." << std::endl;
+            return -1;
+        }
+        return top->data;
+    }
+
+    /**
+     * Return number of elements in stack. O(1) operation.
+     */
+    size_t size() const {
+        return count;
+    }
+};
+
+/**
+ * Demonstrates stack operations using custom linked list implementation.
+ * Pushes 5 integers and pops them to show LIFO ordering.
+ */
+int main() {
+    auto startTime = std::chrono::high_resolution_clock::now();
+    
+    // Create stack instance
+    Stack myStack;
+
+    // Push elements
+    myStack.push(10);
+    myStack.push(20);
+    myStack.push(30);
+    myStack.push(40);
+    myStack.push(50);
+    
+    // Calculate memory (5 nodes + overhead)
+    size_t memoryUsed = sizeof(Stack) + (sizeof(Node) * 5);
+
+    // Pop and print elements
+    std::cout << "Elements in the Stack:" << std::endl;
+    while (!myStack.isEmpty()) {
+        std::cout << "Popped Element: " << myStack.pop() << std::endl;
+    }
+    
+    auto endTime = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime);
+    
+    // Performance statistics
+    std::cout << "\n--- Performance Statistics ---" << std::endl;
+    std::cout << std::fixed << std::setprecision(4);
+    std::cout << "Execution time: " << duration.count() / 1000.0 << " ms" << std::endl;
+    std::cout << "Memory usage: " << memoryUsed << " bytes" << std::endl;
+    std::cout << "\nTime Complexity:" << std::endl;
+    std::cout << "  - Push: O(1)" << std::endl;
+    std::cout << "  - Pop: O(1)" << std::endl;
+    std::cout << "  - Peek: O(1)" << std::endl;
+    std::cout << "  - IsEmpty: O(1)" << std::endl;
 
     return 0;
 }

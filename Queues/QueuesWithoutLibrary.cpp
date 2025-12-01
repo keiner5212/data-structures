@@ -1,97 +1,136 @@
 #include <iostream>
+#include <chrono>
+#include <iomanip>
 
-// Node structure for the elements in the queue
-struct Node
-{
+/**
+ * Node structure for linked list implementation of queue.
+ */
+struct Node {
     int data;
-    Node *next;
+    Node* next;
 
     Node(int value) : data(value), next(nullptr) {}
 };
 
-// Queue class
-class Queue
-{
+/**
+ * Queue implementation using linked list (without STL).
+ * Provides O(1) enqueue and dequeue operations.
+ */
+class Queue {
 private:
-    Node *front;
-    Node *rear;
+    Node* front;
+    Node* rear;
+    size_t count;
 
 public:
-    // Constructor
-    Queue() : front(nullptr), rear(nullptr) {}
+    Queue() : front(nullptr), rear(nullptr), count(0) {}
 
-    // Destructor to free allocated memory
-    ~Queue()
-    {
-        while (!isEmpty())
-        {
+    ~Queue() {
+        while (!isEmpty()) {
             dequeue();
         }
     }
 
-    // Enqueue method to add elements to the queue
-    void enqueue(int value)
-    {
-        Node *newNode = new Node(value);
-        if (isEmpty())
-        {
+    /**
+     * Add element to the rear of the queue. O(1) operation.
+     */
+    void enqueue(int value) {
+        Node* newNode = new Node(value);
+        if (isEmpty()) {
             front = rear = newNode;
-        }
-        else
-        {
+        } else {
             rear->next = newNode;
             rear = newNode;
         }
+        count++;
     }
 
-    // Dequeue method to remove and return the front element from the queue
-    int dequeue()
-    {
-        if (isEmpty())
-        {
+    /**
+     * Remove and return front element from the queue. O(1) operation.
+     */
+    int dequeue() {
+        if (isEmpty()) {
             std::cerr << "Error: Attempting to dequeue from an empty queue." << std::endl;
-            return -1; // Indicates empty queue
+            return -1;
         }
 
         int value = front->data;
-        Node *temp = front;
+        Node* temp = front;
         front = front->next;
         delete temp;
 
-        if (front == nullptr)
-        {
-            rear = nullptr; // Reset rear when the last element is dequeued
+        if (front == nullptr) {
+            rear = nullptr;
         }
-
+        count--;
         return value;
     }
 
-    // IsEmpty method to check if the queue is empty
-    bool isEmpty() const
-    {
+    /**
+     * Check if queue is empty. O(1) operation.
+     */
+    bool isEmpty() const {
         return front == nullptr;
+    }
+
+    /**
+     * Return front element without removing it. O(1) operation.
+     */
+    int peek() const {
+        if (isEmpty()) {
+            std::cerr << "Error: Queue is empty." << std::endl;
+            return -1;
+        }
+        return front->data;
+    }
+
+    /**
+     * Return number of elements in queue. O(1) operation.
+     */
+    size_t size() const {
+        return count;
     }
 };
 
-// Main function
-int main()
-{
-    // Create an instance of the queue
+/**
+ * Demonstrates queue operations using custom linked list implementation.
+ * Enqueues 5 integers and dequeues them to show FIFO ordering.
+ */
+int main() {
+    auto startTime = std::chrono::high_resolution_clock::now();
+    
+    // Create queue instance
     Queue myQueue;
 
-    // Enqueue elements to the queue
+    // Enqueue elements
     myQueue.enqueue(10);
     myQueue.enqueue(20);
     myQueue.enqueue(30);
     myQueue.enqueue(40);
     myQueue.enqueue(50);
+    
+    // Calculate memory (5 nodes + overhead)
+    size_t memoryUsed = sizeof(Queue) + (sizeof(Node) * 5);
 
-    // Access and print the elements of the queue
+    // Dequeue and print elements
     std::cout << "Elements in the Queue:" << std::endl;
-    while (!myQueue.isEmpty())
-    {
+    while (!myQueue.isEmpty()) {
         std::cout << "Dequeued Element: " << myQueue.dequeue() << std::endl;
     }
+    
+    auto endTime = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime);
+    
+    // Performance statistics
+    std::cout << "\n--- Performance Statistics ---" << std::endl;
+    std::cout << std::fixed << std::setprecision(4);
+    std::cout << "Execution time: " << duration.count() / 1000.0 << " ms" << std::endl;
+    std::cout << "Memory usage: " << memoryUsed << " bytes" << std::endl;
+    std::cout << "\nTime Complexity:" << std::endl;
+    std::cout << "  - Enqueue: O(1)" << std::endl;
+    std::cout << "  - Dequeue: O(1)" << std::endl;
+    std::cout << "  - Peek: O(1)" << std::endl;
+    std::cout << "  - IsEmpty: O(1)" << std::endl;
 
     return 0;
 }
