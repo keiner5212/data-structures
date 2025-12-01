@@ -1,23 +1,35 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+	"unsafe"
+)
 
-// This program demonstrates the declaration, assignment, and access of elements in an integer array.
-// It declares an array of integers with 5 elements, assigns values to each element, and then prints
-// the elements of the array to the console.
-//
+// Demonstrates array declaration, initialization, and element access.
+// Creates an array with 5 integers and prints each element with its index.
 func main() {
-    // Declaration and initialization of an array of integers with 5 elements
-    miArray := [5]int{10, 20, 30, 40, 50}
+    startTime := time.Now()
+    
+    // Initialize array with 5 elements
+    myArray := [5]int{10, 20, 30, 40, 50}
+    
+    memoryUsed := unsafe.Sizeof(myArray)
 
-    // Accessing the elements of the array and printing to the console
-    for i := 0; i < 5; i++ {
-        fmt.Printf("Element %d: %d\n", i, miArray[i])
+    // Iterate through array and print each element
+    for i := 0; i < len(myArray); i++ {
+        fmt.Printf("Element %d: %d\n", i, myArray[i])
     }
-
-    // Alternatively, you can use a range-based loop:
-    // for i, value := range miArray {
-    //     fmt.Printf("Element %d: %d\n", i, value)
-    // }
-    return
+    
+    elapsed := time.Since(startTime)
+    
+    // Performance statistics
+    fmt.Println("\n--- Performance Statistics ---")
+    fmt.Printf("Execution time: %.4f ms\n", float64(elapsed.Nanoseconds())/1e6)
+    fmt.Printf("Memory usage: %d bytes\n", memoryUsed)
+    fmt.Println("\nTime Complexity:")
+    fmt.Println("  - Access: O(1)")
+    fmt.Println("  - Search: O(n)")
+    fmt.Println("  - Insertion: O(n)")
+    fmt.Println("  - Deletion: O(n)")
 }

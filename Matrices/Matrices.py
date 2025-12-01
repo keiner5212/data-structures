@@ -1,16 +1,39 @@
+import time
+import sys
+
+
 def main():
     """
-    This program demonstrates basic operations with matrices.
+    Demonstrates matrix declaration and element access.
+    Creates a 2x3 matrix and prints all elements in row-column format.
     """
-    # Declaration of matrices
-    matrix1 = [[1, 2, 3], [4, 5, 6]]
+    start_time = time.time()
+    
+    # Initialize 2x3 matrix
+    matrix = [[1, 2, 3], [4, 5, 6]]
+    
+    # Memory calculation
+    memory_bytes = sys.getsizeof(matrix) + sum(sys.getsizeof(row) + sum(sys.getsizeof(item) for item in row) for row in matrix)
 
-    # Printing the matrix
+    # Print matrix elements
     print("Result Matrix:")
-    for i in range(2):
-        for j in range(3):
-            print(matrix1[i][j], end=" ")
+    for i in range(len(matrix)):
+        for j in range(len(matrix[i])):
+            print(matrix[i][j], end=" ")
         print()
+    
+    end_time = time.time()
+    
+    # Performance statistics
+    print("\n--- Performance Statistics ---")
+    print(f"Execution time: {(end_time - start_time) * 1000:.4f} ms")
+    print(f"Memory usage: {memory_bytes} bytes")
+    print("\nTime Complexity:")
+    print("  - Access: O(1)")
+    print("  - Search: O(m*n)")
+    print("  - Insertion (row/col): O(m*n)")
+    print("  - Traversal: O(m*n)")
 
 
-main()
+if __name__ == "__main__":
+    main()

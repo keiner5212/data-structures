@@ -1,26 +1,32 @@
 /**
- * This program demonstrates the declaration, assignment, and access of elements in an integer array.
- * It declares an array of integers with 5 elements, assigns values to each element,
- * and then prints the elements of the array to the console.
+ * Demonstrates array declaration, initialization, and element access.
+ * Creates an array with 5 integers and prints each element with its index.
  */
 function main() {
-	// Declaration of an array of integers with 5 elements
-	const miArray = [];
+    const startTime = performance.now();
+    const memoryBefore = process.memoryUsage().heapUsed;
+    
+    // Initialize array with 5 elements
+    const myArray = [10, 20, 30, 40, 50];
 
-	// Assignment of values to the elements of the array
-	miArray[0] = 10;
-	miArray[1] = 20;
-	miArray[2] = 30;
-	miArray[3] = 40;
-	miArray[4] = 50;
-
-	// Same as: const miArray = [10, 20, 30, 40, 50];
-
-	// Accessing the elements of the array and printing to the console
-	for (let i = 0; i < 5; i++) {
-		console.log(`Element ${i}: ${miArray[i]}`);
-	}
+    // Iterate through array and print each element
+    for (let i = 0; i < myArray.length; i++) {
+        console.log(`Element ${i}: ${myArray[i]}`);
+    }
+    
+    const endTime = performance.now();
+    const memoryAfter = process.memoryUsage().heapUsed;
+    const memoryUsed = memoryAfter - memoryBefore;
+    
+    // Performance statistics
+    console.log("\n--- Performance Statistics ---");
+    console.log(`Execution time: ${(endTime - startTime).toFixed(4)} ms`);
+    console.log(`Memory usage: ${memoryUsed > 0 ? memoryUsed : 'negligible'} bytes`);
+    console.log("\nTime Complexity:");
+    console.log("  - Access: O(1)");
+    console.log("  - Search: O(n)");
+    console.log("  - Insertion: O(n)");
+    console.log("  - Deletion: O(n)");
 }
 
-// Call the main function
 main();
